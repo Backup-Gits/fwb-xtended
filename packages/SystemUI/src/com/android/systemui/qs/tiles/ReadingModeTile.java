@@ -25,6 +25,7 @@ import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.R;
 
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
+import com.android.internal.util.xtended.PackageManagerUtils;
 
 import com.android.internal.custom.hardware.LineageHardwareManager;
 
@@ -64,7 +65,8 @@ public class ReadingModeTile extends QSTileImpl<BooleanState> {
 
     @Override
     public boolean isAvailable() {
-        return mHardware.isSupported(LineageHardwareManager.FEATURE_READING_ENHANCEMENT);
+        return !isWellbeingEnabled() &&
+                mHardware.isSupported(LineageHardwareManager.FEATURE_READING_ENHANCEMENT);
     }
 
     @Override
@@ -110,5 +112,10 @@ public class ReadingModeTile extends QSTileImpl<BooleanState> {
 
     private boolean isReadingModeEnabled() {
         return mHardware.get(LineageHardwareManager.FEATURE_READING_ENHANCEMENT);
+    }
+
+    private boolean isWellbeingEnabled() {
+       return PackageManagerUtils.isAppEnabled(mContext,
+                mContext.getString(com.android.internal.R.string.config_defaultWellbeingPackage));
     }
 }
